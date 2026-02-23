@@ -270,6 +270,66 @@ Each commit represents a complete phase with working, tested code. This enables:
    - Separated into proper nginx.conf file
    - Learned: Configuration as code best practices
 
+### Unexpected Challenges (Real-World Reality Check)
+
+Not everything went smoothly. Here's what actually happened:
+
+#### Challenge #1: GitHub Authentication Token Mismatch
+**What happened:** Lava tried to push code but used wrong GitHub account token (lavaclawdbot instead of LanNguyenSi)
+
+**Error:** Authentication failed on first push attempt
+
+**Resolution:** 
+- Switched from HTTPS to SSH authentication
+- Used proper SSH keys configured in Git
+- Re-pushed successfully
+- **Time cost:** 5 minutes
+
+**Learning:** SSH keys are more reliable than PATs for multi-account workflows
+
+#### Challenge #2: Tailwind PostCSS Configuration
+**What happened:** Frontend build failed due to PostCSS config mismatch
+
+**Error:** `Unknown at rule @tailwindcss/postcss`
+
+**Root cause:** Confusion between tailwindcss package vs @tailwindcss/postcss
+
+**Resolution:**
+- Fixed postcss.config.js with correct Tailwind integration
+- Rebuilt successfully
+- **Time cost:** 3 minutes
+
+**Learning:** Build tool configuration is on the critical path. Test builds early and often.
+
+#### Challenge #3: Nginx Configuration Syntax
+**What happened:** Initial Nginx config used inline `echo` command in docker-compose which failed
+
+**Error:** Nginx container wouldn't start due to config syntax error
+
+**Root cause:** Attempted inline configuration instead of proper nginx.conf file
+
+**Resolution:**
+- Separated Nginx config into proper `nginx.conf` file
+- Mounted config file into container
+- Container started successfully
+- **Time cost:** 2 minutes
+
+**Learning:** Infrastructure-as-code means proper file structures, not shell tricks
+
+#### Challenge #4: Docker Node.js Version Incompatibility  
+**What happened:** Vite build failed in Docker due to Node.js 18 (too old)
+
+**Error:** Vite requires Node 18+ features that weren't available
+
+**Root cause:** Used Node 18 (minimum) when Vite needs 20+ for optimal compatibility
+
+**Resolution:**
+- Updated Dockerfile to use Node 20
+- Rebuilt and redeployed
+- **Time cost:** 2 minutes
+
+**Learning:** Check tool compatibility requirements before deployment
+
 ### Team Dynamics
 
 1. **Speed Advantage**
@@ -286,6 +346,7 @@ Each commit represents a complete phase with working, tested code. This enables:
    - Small issues resolved quickly
    - Clear debug paths due to documentation
    - No critical failures requiring restart
+   - **Key insight:** Even with challenges, team stayed coordinated because of written documentation
 
 ---
 
